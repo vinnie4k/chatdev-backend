@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
 /**
  * This route returns all posts
  */
-app.get("/posts/", async (req, res) => {
+app.get("/api/posts/", async (req, res) => {
   const snapshot = await db.collection("posts").get();
 
   let posts = [];
@@ -41,4 +41,4 @@ app.get("/posts/", async (req, res) => {
   return res.status(200).json(posts);
 });
 
-exports.api = onRequest({ region: "us-east1" }, app);
+exports.chatdev = onRequest({ region: "us-east1" }, app);
