@@ -1,30 +1,44 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
-
+// Firebase SDK
 const { onRequest } = require("firebase-functions/v2/https");
-const express = require("express");
-const app = express();
-
+const { getFirestore } = require("firebase-admin/firestore");
 const admin = require("firebase-admin");
 const serviceAccount = "./service_account_key.json";
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
 });
 
-/* Routes */
+// Other Dependencies
+const express = require("express");
+const app = express();
+const cors = require("cors");
+app.use(cors({ origin: true }));
+app.use(express.json());
 
+// Constants
+const db = getFirestore();
+
+// ======= Routes =======
+
+/**
+ * Default Route
+ */
 app.get("/", (req, res) => {
-  res.send("Welcome to ChatDev's Backend!");
+  return res.status(200).send("Welcome to ChatDev's Backend!");
 });
 
-exports.app = onRequest({region: "us-east1"}, app);
+/**
+ * This route returns all posts
+ */
+app.get("/posts/", async (req, res) => {
+  const snapshot = await db.collection("posts").get();
+
+  let posts = [];
+  snapshot.forEach((doc) => {
+    posts.push(doc.data());
+  });
+
+  return res.status(200).json(posts);
+});
+
+exports.api = onRequest({ region: "us-east1" }, app);
