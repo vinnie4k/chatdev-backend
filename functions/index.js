@@ -64,7 +64,7 @@ app.post("/api/posts/create/", async (req, res) => {
     id: id,
     likes: [],
     message: message,
-    time: new Date().toISOString(),
+    time: new Date().toISOString().replace(/.\d+Z$/g, "Z"),
   };
 
   try {
