@@ -155,4 +155,19 @@ app.post("/api/posts/unlike/", async (req, res) => {
   }
 });
 
+/**
+ * This route removes all posts
+ */
+app.delete("/api/posts/delete/", async (req, res) => {
+  try {
+    const snapshot = await db.collection("posts").get();
+    snapshot.forEach((doc) => {
+      doc.ref.delete();
+    });
+    return res.status(200).send("Successfully deleted all posts");
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+});
+
 exports.chatdev = onRequest({ region: "us-east1" }, app);
