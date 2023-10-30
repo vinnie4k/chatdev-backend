@@ -156,9 +156,33 @@ app.post("/api/posts/unlike/", async (req, res) => {
 });
 
 /**
- * This route removes all posts
+ * This route removes a specific post
+ *
+ * - post_id (String): the ID of the post
  */
 app.delete("/api/posts/delete/", async (req, res) => {
+  const postId = req.body.post_id;
+
+  if (postId == null) {
+    return res
+      .status(400)
+      .send("Missing parameter `post_id` from request body");
+  }
+
+  try {
+    // Fetch the current post
+    const doc = await db.collection("posts").doc(postId).get();
+    doc.ref.delete();
+    return res.status(200).send(`Successfully deleted post ${postId}`);
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+});
+
+/**
+ * This route removes all posts
+ */
+app.delete("/api/posts/delete/all/", async (req, res) => {
   try {
     const snapshot = await db.collection("posts").get();
     snapshot.forEach((doc) => {
