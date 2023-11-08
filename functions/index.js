@@ -53,7 +53,7 @@ app.get("/api/posts/", async (req, res) => {
  */
 app.post("/api/posts/create/", async (req, res) => {
   const message = req.body.message;
-  if (message == null) {
+  if (!message) {
     return res
       .status(400)
       .send("Missing parameter `message` from request body");
@@ -63,7 +63,7 @@ app.post("/api/posts/create/", async (req, res) => {
   const data = {
     id: id,
     likes: [],
-    message: message,
+    message: String(message),
     time: new Date().toISOString().replace(/.\d+Z$/g, "Z"),
   };
 
@@ -85,7 +85,7 @@ app.post("/api/posts/like/", async (req, res) => {
   const postId = req.body.post_id;
   const netId = req.body.net_id;
 
-  if (postId == null || netId == null) {
+  if (!postId || !netId) {
     return res
       .status(400)
       .send("Missing parameter `post_id` or `net_id` from request body");
@@ -125,7 +125,7 @@ app.post("/api/posts/unlike/", async (req, res) => {
   const postId = req.body.post_id;
   const netId = req.body.net_id;
 
-  if (postId == null || netId == null) {
+  if (!postId || !netId) {
     return res
       .status(400)
       .send("Missing parameter `post_id` or `net_id` from request body");
@@ -163,7 +163,7 @@ app.post("/api/posts/unlike/", async (req, res) => {
 app.delete("/api/posts/delete/", async (req, res) => {
   const postId = req.body.post_id;
 
-  if (postId == null) {
+  if (!postId) {
     return res
       .status(400)
       .send("Missing parameter `post_id` from request body");
